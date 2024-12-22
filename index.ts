@@ -22,6 +22,7 @@ class Question {
 }
 
 const questions = new Map<string, Question>();
+const users = new Map<string, string>(); // maps user id to question id. Used to track which question the user is creating
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
 
@@ -54,6 +55,7 @@ function processInteraction(interaction: any) {
         //interaction.reply("What is the question");
         const question = new Question(interaction.options.getString("qtype"));
         questions.set(question.id, question);
+        users.set(interaction.user.id, question.id);
     }
 
 }
