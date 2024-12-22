@@ -1,13 +1,14 @@
-const { Client, Events, SlashCommandBuilder, GatewayIntentBits } = require("discord.js");
+import { Client, SlashCommandBuilder, GatewayIntentBits, Events } from "discord.js";
+
 const { token } = require("./config.json");
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
 
-client.once(Events.ClientReady, client => {
-    console.log(`Logged in as ${client.user.tag}`);
+client.once(Events.ClientReady, (client:Client)=> {
+    console.log(`Logged in as ${client.user?.tag}`);
 
     const slashCommandPing = new SlashCommandBuilder().setName("ping").setDescription("Replies with pong").toJSON();
-    client.application.commands.create(slashCommandPing, "1008709138110488586").then(acs => {
+    client.application?.commands.create(slashCommandPing, "1008709138110488586").then(acs => {
         console.log(acs);
     });
 });
