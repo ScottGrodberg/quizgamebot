@@ -20,9 +20,12 @@ class Question {
         this.answers = new Array();
     }
 }
-
-const questions = new Map<string, Question>();
-const users = new Map<string, string>(); // maps user id to question id. Used to track which question the user is creating
+type QuestionId = string;
+type UserId = string;
+type ChannelId = string;
+const questions = new Map<QuestionId, Question>();
+const users = new Map<UserId, Question>(); // Used to track which question the user is creating
+const channels = new Map<ChannelId, Array<Question>>();
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
 
@@ -46,16 +49,27 @@ client.once(Events.ClientReady, client => {
 
 client.on(Events.InteractionCreate, interaction => processInteraction(interaction));
 
-client.on(Events.MessageCreate, message => {});
+client.on(Events.MessageCreate, message => { });
 
 client.login(token);
 
 function processInteraction(interaction: any) {
     if (interaction.commandName === "new") {
-        //interaction.reply("What is the question");
+
         const question = new Question(interaction.options.getString("qtype"));
         questions.set(question.id, question);
-        users.set(interaction.user.id, question.id);
+
+        users.set(interaction.user.id, question);
+
+        let _questions: Array<Question> | undefined = channels.get(interaction.channelId);
+        if (!_questions) {
+            _questions = new Array();
+            channels.set(interaction.channelId, _questions);
+        }
+        _questions.push(question);
+        
+        interaction.reply("Starting a new question");
+
     }
 
 }
