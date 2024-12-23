@@ -12,10 +12,9 @@ interface Answer {
 }
 class Question {
     id: string;
-    text?: string;
     answers: Array<Answer>;
 
-    constructor(public questionType: QuestionType) {
+    constructor(public questionType: QuestionType, public text: string) {
         this.id = Utility.generateUid(8);
         this.answers = new Array();
     }
@@ -32,8 +31,8 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBit
 client.once(Events.ClientReady, client => {
     console.log(`Logged in as ${client.user.tag}`);
 
-    const command = new SlashCommandBuilder()
-        .setName("new")
+    const commandQ = new SlashCommandBuilder()
+        .setName("q")
         .setDescription("Create a new question")
         .addStringOption(option =>
             option.setName('qtype')
@@ -43,8 +42,13 @@ client.once(Events.ClientReady, client => {
                     { name: 'Multiple Choice', value: 'MULTI_CHOICE' },
                     { name: 'True or False', value: 'TRUE_FALSE' }
                 )
+        ).addStringOption(option =>
+            option.setName('text')
+                .setDescription('The text of the question')
+                .setRequired(true)
         );
-    client.application.commands.create(command, guildId);
+    client.application.commands.create(commandQ, guildId);
+
 });
 
 client.on(Events.InteractionCreate, interaction => processCommand(interaction));
@@ -55,8 +59,10 @@ client.login(token);
 
 function processCommand(interaction: any) {
     switch (interaction.commandName) {
-        case "new": {
-            const question = new Question(interaction.options.getString("qtype"));
+        case "q": {
+            const qType = interaction.options.getString("qtype");
+            const text = interaction.options.getString("text");
+            const question = new Question(qType,text);
             questions.set(question.id, question);
 
             users.set(interaction.user.id, question);
