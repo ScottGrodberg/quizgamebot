@@ -4,10 +4,9 @@ type QuestionId = string;
 type UserId = string;
 type ChannelId = string;
 export type QuestionType = "MULTI_CHOICE" | "TRUE_FALSE";
-    
-interface Answer {
-    text: string;
-    correct: boolean;
+
+export class Answer {
+    constructor(public text: string, public correct: boolean) { }
 }
 
 export class Question {
@@ -21,7 +20,7 @@ export class Question {
 }
 
 export class Data {
-     questions = new Map<QuestionId, Question>();
-     users = new Map<UserId, Question>(); // Used to track which question the user is creating
-     channels = new Map<ChannelId, Array<Question>>();
+    questions = new Map<QuestionId, Question>();
+    users = new Map<UserId, Question>(); // Used to track which question the user is creating
+    channels = new Map<ChannelId, Array<Question>>();
 }
