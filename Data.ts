@@ -13,7 +13,7 @@ export class User {
     points: number;
     question?: Question;
 
-    constructor(public userId: UserId) {
+    constructor(public userId: UserId, public channelId: ChannelId) {
         this.points = 0;
     }
 }

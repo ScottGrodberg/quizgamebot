@@ -32,7 +32,7 @@ export class CommandA implements ICommand {
         // Create a user if not exists
         let user = this.data.users.get(interaction.user.id);
         if (!user) {
-            user = new User(interaction.user.id);
+            user = new User(interaction.user.id, interaction.channelId);
             this.data.users.set(interaction.user.id, user);
         }
 
