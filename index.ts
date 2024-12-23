@@ -54,22 +54,23 @@ client.on(Events.MessageCreate, message => { });
 client.login(token);
 
 function processCommand(interaction: any) {
-    if (interaction.commandName === "new") {
+    switch (interaction.commandName) {
+        case "new": {
+            const question = new Question(interaction.options.getString("qtype"));
+            questions.set(question.id, question);
 
-        const question = new Question(interaction.options.getString("qtype"));
-        questions.set(question.id, question);
+            users.set(interaction.user.id, question);
 
-        users.set(interaction.user.id, question);
+            let _questions: Array<Question> | undefined = channels.get(interaction.channelId);
+            if (!_questions) {
+                _questions = new Array();
+                channels.set(interaction.channelId, _questions);
+            }
+            _questions.push(question);
 
-        let _questions: Array<Question> | undefined = channels.get(interaction.channelId);
-        if (!_questions) {
-            _questions = new Array();
-            channels.set(interaction.channelId, _questions);
+            interaction.reply("Starting a new question");
+            break;
         }
-        _questions.push(question);
-        
-        interaction.reply("Starting a new question");
-
     }
 
 }
