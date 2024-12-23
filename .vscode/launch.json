@@ -10,7 +10,8 @@
             "name": "Launch Program",
             "runtimeArgs": [
                 "-r",
-                "ts-node/register"
+                "ts-node/register",
+                "--watch"
             ],
             "args": [
                 "${workspaceFolder}/index.ts"
