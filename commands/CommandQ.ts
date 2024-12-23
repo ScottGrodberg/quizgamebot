@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
-import { Data, Question, QuestionType } from "../Data";
+import { Data, Question, QuestionType, User } from "../Data";
 import { ICommand } from "./ICommand";
 
 export class CommandQ implements ICommand {
@@ -28,12 +28,21 @@ export class CommandQ implements ICommand {
     }
 
     processCommand(interaction: ChatInputCommandInteraction): void {
+        // Make a new question
         const qType = interaction.options.getString("qtype")! as QuestionType;
         const text = interaction.options.getString("text")!;
         const question = new Question(qType, text);
+
+        // Add ref to the record map
         this.data.questions.set(question.id, question);
 
-        this.data.users.set(interaction.user.id, question);
+        // Create a user if not exists and add ref to question
+        let user = this.data.users.get(interaction.user.id);
+        if (!user) {
+            user = new User(interaction.user.id);
+            this.data.users.set(interaction.user.id, user);
+        }
+        user.question = question;
 
         let _questions: Array<Question> | undefined = this.data.channels.get(interaction.channelId);
         if (!_questions) {

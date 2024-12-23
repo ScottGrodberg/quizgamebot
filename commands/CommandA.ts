@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
-import { Answer, Data } from "../Data";
+import { Answer, Data, User } from "../Data";
 import { ICommand } from "./ICommand";
 
 export class CommandA implements ICommand {
@@ -24,10 +24,20 @@ export class CommandA implements ICommand {
     }
 
     processCommand(interaction: ChatInputCommandInteraction): void {
+        // Make a new answer
         const text = interaction.options.getString("text")!;
         const correct = interaction.options.getBoolean("correct")!;
         const answer = new Answer(text, correct);
-        const question = this.data.users.get(interaction.user.id);
+
+        // Create a user if not exists
+        let user = this.data.users.get(interaction.user.id);
+        if (!user) {
+            user = new User(interaction.user.id);
+            this.data.users.set(interaction.user.id, user);
+        }
+
+        // Push the answer
+        const question = user.question;
         if (!question) {
             interaction.reply("Could not find a current question. Create one before adding answers");
             return;

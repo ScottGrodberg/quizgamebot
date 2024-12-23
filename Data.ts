@@ -9,6 +9,15 @@ export class Answer {
     constructor(public text: string, public correct: boolean) { }
 }
 
+export class User {
+    points: number;
+    question?: Question;
+
+    constructor(public userId: UserId) {
+        this.points = 0;
+    }
+}
+
 export class Question {
     id: string;
     answers: Array<Answer>;
@@ -21,6 +30,6 @@ export class Question {
 
 export class Data {
     questions = new Map<QuestionId, Question>();
-    users = new Map<UserId, Question>(); // Used to track which question the user is creating
+    users = new Map<UserId, User>(); // Used to track which question the user is creating
     channels = new Map<ChannelId, Array<Question>>();
 }
