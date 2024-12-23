@@ -47,13 +47,13 @@ client.once(Events.ClientReady, client => {
     client.application.commands.create(command, guildId);
 });
 
-client.on(Events.InteractionCreate, interaction => processInteraction(interaction));
+client.on(Events.InteractionCreate, interaction => processCommand(interaction));
 
 client.on(Events.MessageCreate, message => { });
 
 client.login(token);
 
-function processInteraction(interaction: any) {
+function processCommand(interaction: any) {
     if (interaction.commandName === "new") {
 
         const question = new Question(interaction.options.getString("qtype"));
